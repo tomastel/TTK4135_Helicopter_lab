@@ -1,2 +1,0 @@
-  helicopter.c
-
