@@ -47,30 +47,30 @@ vlb(N*mx+M*mu)  = 0;                                % We want the last input to 
 vub(N*mx+M*mu)  = 0;                                % We want the last input to be zero
 
 % Generate the matrix Q and the vector c (objecitve function weights in the QP problem) 
-Q1 = zeros(mx,mx);
-Q1(1,1) = 1200;                                % Weight on state x1
-Q1(2,2) = 1200;                             % Weight on state x2
-Q1(3,3) = 1200;                             % Weight on state x3
-Q1(4,4) = 1200;                             % Weight on state x4
-P1 = 0;                                    % Weight on input
-Q = gen_q(Q1,P1,N,M);                      % Generate Q, hint: gen_q
+Q = zeros(mx,mx);
+Q(1,1) = 1;                                % Weight on state x1
+Q(2,2) = 0;                             % Weight on state x2
+Q(3,3) = 0;                             % Weight on state x3
+Q(4,4) = 0;                             % Weight on state x4
+R = 12;                                    % Weight on input
+G = gen_q(Q,R,N,M);                      % Generate G, hint: gen_q
 c = zeros(N*mx+M*mu,1);                    % Generate c, this is the linear constant term in the QP
 
 %% Generate system matrixes for linear model
-Aeq = gen_aeq(A1,B1,N,mx,mu);             % Generate A, hint: gen_aeq
+Aeq = gen_aeq(A1,B1,N,mx,mu)             % Generate A, hint: gen_aeq
 beq = zeros(N*mx, 1);                    % Generate b
 beq(1:4, 1) = A1*x0;
 
 %% Solve QP problem with linear model
 tic
-[z,lambda] = quadprog(2*Q, c, [], [], Aeq, beq, vlb, vub, x0); % hint: quadprog. Type 'doc quadprog' for more info 
+[z,lambda] = quadprog(2*G, c, [], [], Aeq, beq, vlb, vub, x0); % hint: quadprog. Type 'doc quadprog' for more info 
 t1=toc;
 
 % Calculate objective value
 phi1 = 0.0;
 PhiOut = zeros(N*mx+M*mu,1);
 for i=1:N*mx+M*mu
-  phi1=phi1+Q(i,i)*z(i)*z(i);
+  phi1=phi1+G(i,i)*z(i)*z(i);
   PhiOut(i) = phi1;
 end
 
@@ -113,3 +113,4 @@ ylabel('p')
 subplot(515)
 plot(t,x4,'m',t,x4','mo'),grid
 xlabel('tid (s)'),ylabel('pdot')
+% sgtitle("R = " + num2str(R))

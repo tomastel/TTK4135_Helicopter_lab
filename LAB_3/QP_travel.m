@@ -48,13 +48,13 @@ vlb(N*mx+M*mu)  = 0;                                % We want the last input to 
 vub(N*mx+M*mu)  = 0;                                % We want the last input to be zero
 
 % Generate the matrix Q and the vector c (objecitve function weights in the QP problem) 
-Q1 = zeros(mx,mx);
-Q1(1,1) = 1;                                % Weight on state x1
-Q1(2,2) = 0;                             % Weight on state x2
-Q1(3,3) = 0;                             % Weight on state x3
-Q1(4,4) = 0;                              % Weight on state x4
+Q = zeros(mx,mx);
+Q(1,1) = 1;                                % Weight on state x1
+Q(2,2) = 0;                             % Weight on state x2
+Q(3,3) = 0;                             % Weight on state x3
+Q(4,4) = 0;                              % Weight on state x4
 R = 1;                                    % Weight on input
-G = gen_q(Q1,R,N,M);                      % Generate Q, hint: gen_q
+G = gen_q(Q,R,N,M);                      % Generate G, hint: gen_q
 c = zeros(N*mx+M*mu,1);                   % Generate c, this is the linear constant term in the QP
 
 %% Calculate LQR gain matrix
