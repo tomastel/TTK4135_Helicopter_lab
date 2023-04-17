@@ -3,7 +3,7 @@
 % Updated spring 2018, Andreas L. Flåten
 
 %% Initialization and model definition
-init03; % Change this to the init file corresponding to your helicopter
+init03; % Run init
 
 % Discrete time system model. x = [lambda r p p_dot]'
 delta_t	= 0.25; % sampling time
@@ -33,8 +33,8 @@ z  = zeros(N*mx+M*mu,1);                % Initialize z for the whole horizon
 z0 = z;                                 % Initial value for optimization
 
 % Bounds
-ul 	    = -pi/2;                   % Lower bound on control
-uu 	    = pi/2;                   % Upper bound on control
+ul 	    = -pi/6;                   % Lower bound on control
+uu 	    = pi/6;                   % Upper bound on control
 
 
 xl      = -Inf*ones(mx,1);              % Lower bound on states (no bound)
@@ -64,7 +64,7 @@ Q_lqr = [1000 0 0 0;
          0 0 0 1;];
 R_lqr = 1;
 
-K = dlqr(A1,B1, Q_lqr, R_lqr)
+K = dlqr(A1,B1, Q_lqr, R_lqr) %Feedback gain
 
 %% Generate system matrixes for linear model
 Aeq = gen_aeq(A1,B1,N,mx,mu);             % Generate A, hint: gen_aeq
@@ -96,6 +96,7 @@ num_variables = 5/delta_t;
 zero_padding = zeros(num_variables,1);
 unit_padding  = ones(num_variables,1);
 
+% Add zero-padding (5 sec) before and after trajectory
 u   = [zero_padding; u; zero_padding];
 x1  = [pi*unit_padding; x1; zero_padding];
 x2  = [zero_padding; x2; zero_padding];
